@@ -31,8 +31,10 @@ test.describe("Form Layout Page", () => {
   });
 
   test("Radio Buttons", async ({ page }) => {
-    const usingTheGridForm = page.locator("nb-card", { hasText: "Using the Grid" })
-   /* const radioButton1 = usingTheGridForm.getByText('Option 1')
+    const usingTheGridForm = page.locator("nb-card", {
+      hasText: "Using the Grid",
+    });
+    /* const radioButton1 = usingTheGridForm.getByText('Option 1')
                                            .getByLabel('Option 1');
     const radioButton2 = usingTheGridForm.getByText('Option 2')
                                          .getByRole('radio', {name: 'Option 2'})   
@@ -42,23 +44,73 @@ test.describe("Form Layout Page", () => {
     await radioButton2.click()
     await radioButton3.click()*/
 
-    const radioButton1 = usingTheGridForm.getByLabel('Option 1');
-    const radioButton2 = usingTheGridForm.getByRole('radio', {name: 'Option 2'})   
-    await radioButton1.check({force: true})
-    const status = await radioButton1.isChecked()
-   
+    const radioButton1 = usingTheGridForm.getByLabel("Option 1");
+    const radioButton2 = usingTheGridForm.getByRole("radio", {
+      name: "Option 2",
+    });
+    await radioButton1.check({ force: true });
+    const status = await radioButton1.isChecked();
+
     //Generic assertion
-    expect(status).toBeTruthy()
-    expect(status).toBe(true)
-    expect(await radioButton2.isChecked()).toBe(false)
+    expect(status).toBeTruthy();
+    expect(status).toBe(true);
+    expect(await radioButton2.isChecked()).toBe(false);
 
     //Locator assertion
-    await expect(radioButton1).toBeChecked()
-    await expect(radioButton2).not.toBeChecked()
+    await expect(radioButton1).toBeChecked();
+    await expect(radioButton2).not.toBeChecked();
 
-    radioButton2.check({force: true})
-    
-    await expect(radioButton1).not.toBeChecked()
-    await expect(radioButton2).toBeChecked()
+    radioButton2.check({ force: true });
+
+    await expect(radioButton1).not.toBeChecked();
+    await expect(radioButton2).toBeChecked();
+  });
+});
+
+test.describe("Toastr Page", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.getByText("Modal & Overlays").click();
+    await page.getByText("Toastr").click();
+  });
+
+  test("Checkbox", async ({ page }) => {
+    const checkbox1 = page.getByRole("checkbox", { name: "Hide on click" });
+    const checkbox2 = page.getByRole("checkbox", {
+      name: "Prevent arising of duplicate toast",
+    });
+    const checkbox3 = page.getByRole("checkbox", {
+      name: "Show toast with icon",
+    });
+
+    await expect(checkbox1).toBeChecked();
+    await expect(checkbox2).not.toBeChecked();
+    await expect(checkbox3).toBeChecked();
+
+    // checkbox1.check -> check the checkbox, if the checkbox is already checked, it doesn't do anything
+    await checkbox1.check();
+    await expect(checkbox1).toBeChecked();
+
+    await checkbox1.click({ force: true }); // force true because of class visually-hidden
+    await expect(checkbox1).not.toBeChecked();
+
+    await checkbox2.check({ force: true });
+    await checkbox3.uncheck({ force: true });
+
+    await expect(checkbox1).not.toBeChecked();
+    await expect(checkbox2).toBeChecked();
+    await expect(checkbox3).not.toBeChecked();
+
+    // Check all checkboxes
+    const allCheckBoxes = page.getByRole("checkbox");
+    for (const box of await allCheckBoxes.all()) {
+      await box.check({ force: true });
+      expect(await box.isChecked()).toBe(true);
+    }
+    // Uncheck all checkboxes
+
+    for (const box of await allCheckBoxes.all()) {
+      await box.uncheck({ force: true });
+      expect(await box.isChecked()).toBe(false);
+    }
   });
 });
