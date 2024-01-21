@@ -185,7 +185,7 @@ test.describe("Locator syntax rules", () => {
     await expect(basicFormButton).toHaveText("Submit");
 
     //Soft Assertion
-    await expect.soft(basicFormButton).toHaveText("Submit2");
+    await expect.soft(basicFormButton).toHaveText("Submit");
     await basicFormButton.click();
   });
 });
