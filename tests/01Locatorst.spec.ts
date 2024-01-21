@@ -168,4 +168,24 @@ test.describe("Locator syntax rules", () => {
     const placeholderValue = await emailField.getAttribute("placeholder");
     expect(placeholderValue).toEqual("Email");
   });
+
+  test("Assertions", async ({ page }) => {
+    // General assertions
+    const value = 5;
+    expect(value).toEqual(5);
+
+    const basicFormButton = page
+      .locator("nb-card")
+      .filter({ hasText: "Basic form" })
+      .locator("Button");
+    const text = await basicFormButton.textContent();
+    expect(text).toEqual("Submit");
+
+    //Locator assertion
+    await expect(basicFormButton).toHaveText("Submit");
+
+    //Soft Assertion
+    await expect.soft(basicFormButton).toHaveText("Submit2");
+    await basicFormButton.click();
+  });
 });
