@@ -1,8 +1,9 @@
 import { test, expect } from "@playwright/test";
 
-test.beforeEach(async ({ page }) => {
+test.beforeEach(async ({ page }, testInfo) => {
   await page.goto("http://www.uitestingplayground.com/ajax");
   await page.getByText("Button Triggering AJAX Request").click();
+  testInfo.setTimeout(testInfo.timeout + 2000) // This change the timeout for the whole suite
 });
 
 test("Autowaiting", async ({ page }) => {
@@ -60,4 +61,22 @@ test("Alternative waits - Wait for element", async ({ page }) => {
 
     const allText = await successMessageElement.allTextContents();
     expect(allText).toContain("Data loaded with AJAX get request.")
+  });
+
+  test("Timeouts", async ({ page }) => {
+    const successMessageElement = page.locator(".bg-success");
+  
+    // actionTimeout is set in the config file to 5secs, therefore would fail. But adding a timeout inside click it will pass
+    await successMessageElement.click({timeout:16000})
+  });
+
+  test("Timeouts 2", async ({ page }) => {
+    /* Go to the playwright.config.ts and change
+    timeout: 10000
+    remove actionTimeout
+    */
+    
+    test.slow() //Slow test will be given triple the default timeout.
+    const successMessageElement = page.locator(".bg-success");
+    await successMessageElement.click()
   });
