@@ -148,12 +148,32 @@ test("List and dropdowns", async ({ page }) => {
 });
 
 test("Tooltips", async ({ page }) => {
-    await page.getByText("Modal & Overlays").click();
-    await page.getByText("Tooltip").click();
+  await page.getByText("Modal & Overlays").click();
+  await page.getByText("Tooltip").click();
 
-    const tooltipCard = page.locator('nb-card', {hasText: 'Tooltip Placements'})
-    await tooltipCard.getByRole('button', {name: 'Top'}).hover()
-    const tooltip = await page.locator('nb-tooltip').textContent()
-    expect(tooltip).toEqual('This is a tooltip')
-    await expect(page.locator('nb-tooltip')).toHaveText('This is a tooltip')
+  const tooltipCard = page.locator("nb-card", {
+    hasText: "Tooltip Placements",
+  });
+  await tooltipCard.getByRole("button", { name: "Top" }).hover();
+  const tooltip = await page.locator("nb-tooltip").textContent();
+  expect(tooltip).toEqual("This is a tooltip");
+  await expect(page.locator("nb-tooltip")).toHaveText("This is a tooltip");
+});
+
+test("Dialogue Box", async ({ page }) => {
+  await page.getByText("Tables & Data").click();
+  await page.getByText("Smart Table").click();
+
+  page.on("dialog", (dialog) => {
+    expect(dialog.message()).toEqual("Are you sure you want to delete?");
+    dialog.accept();
+  });
+
+  const row = page
+    .locator("table")
+    .locator("tr", { hasText: "@mdo" })
+    .locator(".nb-trash");
+  await row.click();
+
+  await expect(page.locator("table tr").first()).not.toHaveText("@mdo");
 });
