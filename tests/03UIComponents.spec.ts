@@ -293,7 +293,7 @@ test("Sliders", async ({ page }) => {
     node.setAttribute("cx", "232.63");
     node.setAttribute("cy", "232.63");
   });
-  await tempGauge.click()
+  //await tempGauge.click()
 
   // Option 2
   const tempBox = page.locator(
