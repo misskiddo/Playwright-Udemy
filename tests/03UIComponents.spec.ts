@@ -177,3 +177,105 @@ test("Dialogue Box", async ({ page }) => {
 
   await expect(page.locator("table tr").first()).not.toHaveText("@mdo");
 });
+
+test.describe("Web Tables", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.getByText("Tables & Data").click();
+    await page.getByText("Smart Table").click();
+  });
+
+  test("Edit entry", async ({ page }) => {
+    // 1 Get the row by any text in the row
+    /*const row = page
+          .locator("table")
+          .locator("tr", { hasText: "twitter@outlook.com" });*/
+    const row = page.getByRole("row", { name: "twitter@outlook.com" });
+
+    // 2 Click edit
+    await row.locator(".nb-edit").click();
+
+    // 3 Edit age from 18 to 35
+    //const ageInput = page.locator('tbody [placeholder="Age"]');
+    const ageInput = page.locator("input-editor").getByPlaceholder("Age");
+    await ageInput.clear();
+    await ageInput.fill("35");
+
+    // 4 Confirm changes
+    await page.locator(".nb-checkmark").click();
+
+    // 5 Assertion
+    await expect(row.locator("td").nth(6)).toHaveText("35");
+  });
+
+  test("Edit entry based on id", async ({ page }) => {
+    // 1 Go to the second page
+    const navigation = page.locator(".pagination li").filter({ hasText: "2" });
+    await navigation.click();
+
+    // 2 Identify row with id 11
+    const targetRow = page
+      .getByRole("row")
+      .filter({ has: page.locator("td").nth(1).getByText("11") });
+    await targetRow.locator(".nb-edit").click();
+    const ageInput = page.locator("input-editor").getByPlaceholder("E-mail");
+    await ageInput.clear();
+    await ageInput.fill("toni@test.com");
+
+    // 3 Confirm changes
+    await page.locator(".nb-checkmark").click();
+
+    // 4 Assertion
+    await expect(targetRow.locator("td").nth(5)).toHaveText("toni@test.com");
+  });
+
+  test("Filter", async ({ page }) => {
+    const ages = ["20", "30", " 40", "200"];
+
+    for (let age of ages) {
+      // 1 Introduce the age
+      await page.locator("input-filter").getByPlaceholder("Age").fill(age);
+      await page.waitForTimeout(500);
+
+      // 2 Validate that the table is filtering
+      const columns = page.locator("tbody td").nth(6);
+      for (let column of await columns.all()) {
+        if (age == "200") {
+          await expect(
+            page.getByRole("table")
+          ).toHaveText("No data found");
+        } else {
+          await expect(column).toHaveText(age);
+        }
+      }
+    }
+  });
+});
+
+test("Calendar", async ({ page }) => {
+  await page.getByText("Forms").click();
+  await page.getByText("Datepicker").click();
+
+  const calerndarInputField = page.getByPlaceholder('Form Picker');
+
+  await calerndarInputField.click()
+  let date = new Date();
+  date.setDate(date.getDate() + 500)
+  const expectedDate = date.getDate().toString()
+  const expectedMonthShort = date.toLocaleString('En-US', {month: 'short'})
+  const expectedMonthLong = date.toLocaleString('En-US', {month: 'long'})
+  const expectedYear = date.getFullYear()
+  const dateToAssert = `${expectedMonthShort} ${expectedDate}, ${expectedYear}`
+
+  let calendarMonthAndYear = await page.locator('nb-calendar-view-mode').textContent()
+  const expectedMonthAndYear = ` ${expectedMonthLong} ${expectedYear}`
+  console.log(date)
+  console.log(calendarMonthAndYear)
+  console.log(expectedMonthAndYear)
+  while(!calendarMonthAndYear.includes(expectedMonthAndYear)){
+    await page.locator('.next-month').click()
+    calendarMonthAndYear = await page.locator('nb-calendar-view-mode').textContent()
+  }
+  await page.locator('[class="day-cell ng-star-inserted"]').getByText(expectedDate, {exact: true}).click()
+  await expect(calerndarInputField).toHaveValue(dateToAssert)
+});
+
