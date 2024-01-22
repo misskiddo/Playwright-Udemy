@@ -240,9 +240,7 @@ test.describe("Web Tables", () => {
       const columns = page.locator("tbody td").nth(6);
       for (let column of await columns.all()) {
         if (age == "200") {
-          await expect(
-            page.getByRole("table")
-          ).toHaveText("No data found");
+          await expect(page.getByRole("table")).toHaveText("No data found");
         } else {
           await expect(column).toHaveText(age);
         }
@@ -255,27 +253,63 @@ test("Calendar", async ({ page }) => {
   await page.getByText("Forms").click();
   await page.getByText("Datepicker").click();
 
-  const calerndarInputField = page.getByPlaceholder('Form Picker');
+  const calerndarInputField = page.getByPlaceholder("Form Picker");
 
-  await calerndarInputField.click()
+  await calerndarInputField.click();
   let date = new Date();
-  date.setDate(date.getDate() + 500)
-  const expectedDate = date.getDate().toString()
-  const expectedMonthShort = date.toLocaleString('En-US', {month: 'short'})
-  const expectedMonthLong = date.toLocaleString('En-US', {month: 'long'})
-  const expectedYear = date.getFullYear()
-  const dateToAssert = `${expectedMonthShort} ${expectedDate}, ${expectedYear}`
+  date.setDate(date.getDate() + 500);
+  const expectedDate = date.getDate().toString();
+  const expectedMonthShort = date.toLocaleString("En-US", { month: "short" });
+  const expectedMonthLong = date.toLocaleString("En-US", { month: "long" });
+  const expectedYear = date.getFullYear();
+  const dateToAssert = `${expectedMonthShort} ${expectedDate}, ${expectedYear}`;
 
-  let calendarMonthAndYear = await page.locator('nb-calendar-view-mode').textContent()
-  const expectedMonthAndYear = ` ${expectedMonthLong} ${expectedYear}`
-  console.log(date)
-  console.log(calendarMonthAndYear)
-  console.log(expectedMonthAndYear)
-  while(!calendarMonthAndYear.includes(expectedMonthAndYear)){
-    await page.locator('.next-month').click()
-    calendarMonthAndYear = await page.locator('nb-calendar-view-mode').textContent()
+  let calendarMonthAndYear = await page
+    .locator("nb-calendar-view-mode")
+    .textContent();
+  const expectedMonthAndYear = ` ${expectedMonthLong} ${expectedYear}`;
+  console.log(date);
+  console.log(calendarMonthAndYear);
+  console.log(expectedMonthAndYear);
+  while (!calendarMonthAndYear.includes(expectedMonthAndYear)) {
+    await page.locator(".next-month").click();
+    calendarMonthAndYear = await page
+      .locator("nb-calendar-view-mode")
+      .textContent();
   }
-  await page.locator('[class="day-cell ng-star-inserted"]').getByText(expectedDate, {exact: true}).click()
-  await expect(calerndarInputField).toHaveValue(dateToAssert)
+  await page
+    .locator('[class="day-cell ng-star-inserted"]')
+    .getByText(expectedDate, { exact: true })
+    .click();
+  await expect(calerndarInputField).toHaveValue(dateToAssert);
 });
 
+test("Sliders", async ({ page }) => {
+  // Option 1 - Update attribute
+  const tempGauge = page.locator(
+    '[tabtitle="Temperature"] ngx-temperature-dragger circle',
+  );
+  await tempGauge.evaluate((node) => {
+    node.setAttribute("cx", "232.63");
+    node.setAttribute("cy", "232.63");
+  });
+  await tempGauge.click()
+
+  // Option 2
+  const tempBox = page.locator(
+    '[tabtitle="Temperature"] ngx-temperature-dragger',
+  );
+  await tempBox.scrollIntoViewIfNeeded();
+
+  const box = await tempBox.boundingBox();
+  const x = box.x + box.width / 2;
+  const y = box.y + box.height / 2;
+
+  await page.mouse.move(x, y);
+  await page.mouse.down();
+  await page.mouse.move(x + 100, y);
+  await page.mouse.move(x + 100, y + 100);
+  await page.mouse.up();
+
+  await expect(tempBox).toContainText("30");
+});
