@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test("Navigate to form page", async ({ page }) => {
-  const pm = new PageManager(page)
+  const pm = new PageManager(page);
   await pm.navigateTo().formLayoutPage();
   await pm.navigateTo().datepickerPage();
   await pm.navigateTo().smartTablePage();
@@ -15,30 +15,30 @@ test("Navigate to form page", async ({ page }) => {
 });
 
 test("Submit Using the Grid", async ({ page }) => {
-  const pm = new PageManager(page)
+  const pm = new PageManager(page);
   await pm.navigateTo().formLayoutPage();
-  await pm.onFormLayoutPage().submitUsingTheGridFormWithCredentialsAndSelectOption(
-    "toni@test.com",
-    "Pass123",
-    "Option 1",
-  );
+  await pm
+    .onFormLayoutPage()
+    .submitUsingTheGridFormWithCredentialsAndSelectOption(
+      "toni@test.com",
+      "Pass123",
+      "Option 1",
+    );
 });
 
 /**
  *
  */
 test("Submit Inline Form", async ({ page }) => {
-  const pm = new PageManager(page)
+  const pm = new PageManager(page);
   await pm.navigateTo().formLayoutPage();
-  await pm.onFormLayoutPage().submitInlineFormWithNameEmailAndCheckbox(
-    "Toni",
-    "toni@test.com",
-    false,
-  );
+  await pm
+    .onFormLayoutPage()
+    .submitInlineFormWithNameEmailAndCheckbox("Toni", "toni@test.com", false);
 });
 
 test("Calendar", async ({ page }) => {
-  const pm = new PageManager(page)
+  const pm = new PageManager(page);
 
   await pm.navigateTo().datepickerPage();
   await pm.onDatepickerPage().selectCommonDatePickerFromToday(200);

@@ -16,15 +16,15 @@ export class PageManager {
     this.datepickerPage = new DatePickerPage(this.page);
   }
 
-  navigateTo(){
-    return this.navigationPage
+  navigateTo() {
+    return this.navigationPage;
   }
 
-  onFormLayoutPage(){
-    return this.formlayoutPage
+  onFormLayoutPage() {
+    return this.formlayoutPage;
   }
 
-  onDatepickerPage(){
-    return this.datepickerPage
+  onDatepickerPage() {
+    return this.datepickerPage;
   }
 }
