@@ -45,3 +45,5 @@ Thumbs.db
 /blob-report/
 /playwright/.cache/
 # .env
+/allure-report
+/allure-results
