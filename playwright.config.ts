@@ -5,7 +5,7 @@ import type { TestOptions } from "./test-option";
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-require('dotenv').config();
+require("dotenv").config();
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -27,11 +27,14 @@ export default defineConfig<TestOptions>({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-   // baseURL: "http://localhost:4200",
-    globalsQaURL: 'https://www.globalsqa.com/demo-site/draganddrop',
-    baseURL: process.env.DEV === '1' ? 'http://localhost:4200'
-      : process.env.STAGING === '1' ? 'http://localhost:4201'
-      : 'http://localhost:4200',
+    // baseURL: "http://localhost:4200",
+    globalsQaURL: "https://www.globalsqa.com/demo-site/draganddrop",
+    baseURL:
+      process.env.DEV === "1"
+        ? "http://localhost:4201"
+        : process.env.STAGING === "1"
+          ? "http://localhost:4202"
+          : "http://localhost:4200",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
@@ -46,13 +49,20 @@ export default defineConfig<TestOptions>({
       use: { ...devices["Desktop Chrome"], baseURL: "http://localhost:4201" },
     },
     {
+      name: "LocatorsFullScreen",
+      testMatch:'01Locators.spec.ts',
+      use: { 
+        viewport: {width: 1920, height: 1080}
+       },
+    },
+    {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
     },
 
     {
       name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
+      use: { browserName: "firefox" },
     },
 
     {
