@@ -1,15 +1,16 @@
 import { defineConfig, devices } from "@playwright/test";
+import type { TestOptions } from "./test-option";
 
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-// require('dotenv').config();
+require('dotenv').config();
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-export default defineConfig({
+export default defineConfig<TestOptions>({
   //timeout: 10000,
   //globalTimeout: 60000,
   testDir: "./tests",
@@ -26,7 +27,11 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: "http://localhost:4200",
+   // baseURL: "http://localhost:4200",
+    globalsQaURL: 'https://www.globalsqa.com/demo-site/draganddrop',
+    baseURL: process.env.DEV === '1' ? 'http://localhost:4200'
+      : process.env.STAGING === '1' ? 'http://localhost:4201'
+      : 'http://localhost:4200',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",

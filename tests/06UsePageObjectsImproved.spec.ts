@@ -21,8 +21,8 @@ test("Submit Using the Grid", async ({ page }) => {
   await pm
     .onFormLayoutPage()
     .submitUsingTheGridFormWithCredentialsAndSelectOption(
-      "toni@test.com",
-      "Pass123",
+      process.env.EMAIL,
+      process.env.PASSWORD,
       "Option 1",
     );
 });
