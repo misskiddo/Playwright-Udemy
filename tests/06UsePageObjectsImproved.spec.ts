@@ -3,7 +3,7 @@ import { PageManager } from "../page-objects/pageManager";
 import {faker} from '@faker-js/faker'
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("http://localhost:4200");
+  await page.goto("/");
 });
 
 test("Navigate to form page", async ({ page }) => {
@@ -42,6 +42,5 @@ test("Calendar", async ({ page }) => {
 
   await pm.navigateTo().datepickerPage();
   await pm.onDatepickerPage().selectCommonDatePickerFromToday(200);
-
   await pm.onDatepickerPage().selectDatepickerWithRangeFromToday(30, 60);
 });

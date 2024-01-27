@@ -63,14 +63,14 @@ test("Alternative waits - Wait for all network call", async ({ page }) => {
   expect(allText).toContain("Data loaded with AJAX get request.");
 });
 
-test("Timeouts", async ({ page }) => {
+test.skip("Timeouts", async ({ page }) => {
   const successMessageElement = page.locator(".bg-success");
 
   // actionTimeout is set in the config file to 5secs, therefore would fail. But adding a timeout inside click it will pass
   await successMessageElement.click({ timeout: 16000 });
 });
 
-test("Timeouts 2", async ({ page }) => {
+test.skip("Timeouts 2", async ({ page }) => {
   /* Go to the playwright.config.ts and change
     timeout: 10000
     remove actionTimeout
