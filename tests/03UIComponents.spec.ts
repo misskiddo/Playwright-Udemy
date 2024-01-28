@@ -1,10 +1,11 @@
 import { test, expect } from "@playwright/test";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto("http://localhost:4200");
+  await page.goto("/");
 });
 
 test.describe("Form Layout Page", () => {
+  test.describe.configure({retries: 2})
   test.beforeEach(async ({ page }) => {
     await page.getByText("Forms").click();
     await page.getByText("Form Layouts").click();
@@ -18,8 +19,8 @@ test.describe("Form Layout Page", () => {
     // We cannot chain the commands
     await usingTheGridEmailInput.fill("test@test.com");
     await usingTheGridEmailInput.clear();
-    await usingTheGridEmailInput.pressSequentially("test2@test.com", {
-      delay: 500,
+    await usingTheGridEmailInput.pressSequentially("test2@test.comm", {
+    //  delay: 500,
     });
 
     //Generic assertion
